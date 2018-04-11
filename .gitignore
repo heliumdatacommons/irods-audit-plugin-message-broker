@@ -1,0 +1,5 @@
+venv/
+*.pyc
+*.vscode/
+linting-requirements.txt
+
