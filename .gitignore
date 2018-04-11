@@ -2,4 +2,5 @@ venv/
 *.pyc
 *.vscode/
 linting-requirements.txt
-
+*.egg-info
+dist/
