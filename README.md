@@ -49,5 +49,23 @@ various forms of indexers, with little overhead.
 
 
 
+
+## Building this Package
+
+Here are the required steps to build this package:
+
+1. Clone the Repo into the directory of your choice
+2. From the root of the project, run `python setup.py sdist`
+3. That will create a `dist/` directory with a tar.gz package inside of it
+
+
+## Installing this Package
+
+To install this package, simply use `pip`.
+
+`pip install irods-audit-plugin-message-broker-0.1.0.tar.gz`
+
+Note: This package is not available on PyPi, so you will need to build the package before you can install it.
+
 ### Questions about this Package?
 Send me an email at `dsikes@renci.org` if you need assistance with this package.
