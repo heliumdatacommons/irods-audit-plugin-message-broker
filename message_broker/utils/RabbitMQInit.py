@@ -3,12 +3,18 @@ from logzero import logger
 
 class RabbitMQInit():
 
-    def __init__(self, host):
+    def __init__(self, host, port, user, password):
         self.host = host
+        self.port = port
+        self.user = user
+        self.password = password
 
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=host))
+        credentials = pika.PlainCredentials(self.user, self.password)
+        parameters = pika.ConnectionParameters(self.host, self.port, '/', credentials)
+        
+        self.connection = pika.BlockingConnection(parameters)
         self.channel = self.connection.channel()
-    
+
     def consume(self, callback, queue='', no_ack=True):
         if queue == '':
             raise Exception("unable to consume. No queue provided.")

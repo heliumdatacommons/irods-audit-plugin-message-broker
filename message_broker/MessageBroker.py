@@ -57,6 +57,6 @@ class MessageBroker():
                     self.rabbit.publish(json.dumps(formatted_message), self.args.rabbitmq_format_queue)
 
     def start(self):
-        self.rabbit = RabbitMQInit(self.args.rabbitmq_host)
+        self.rabbit = RabbitMQInit(self.args.rabbitmq_host, self.args.rabbitmq_port, self.args.rabbitmq_user, self.args.rabbitmq_pass)
         self.rabbit.consume(self.consumeMessage, self.args.rabbitmq_audit_queue)
         
