@@ -40,8 +40,10 @@ To start the message broker, simply use the `start` command.
 
 | Available Option        | Default Value      |
 | ------------- |:-------------:|
-| --rabbit-mq-host | localhost |
-| --rabbit-mq-port | 6372 |
+| --rabbitmq-host | localhost |
+| --rabbitmq-port | 5672 |
+| --rabbitmq-user | guest |
+| --rabbitmq-pass | guest |
 | --rabbitmq-audit-queue | audit_messages |
 | --rabbitmq-format-queue | audit_messages_formatted |
 | --keymap-file | keymap.yml |
@@ -49,7 +51,7 @@ To start the message broker, simply use the `start` command.
 
 Be sure to provide your optional arguments as needed.
 
-``` mb start --keymap-file=some_different_keymap.yml --rabbitmq-format-queue=some_different_queue ```
+``` mb start --rabbitmq-user=username --rabbitmq-pass=somesecret --keymap-file=some_different_keymap.yml --rabbitmq-format-queue=some_different_queue ```
 
 If everything is operating properly, whichever queue you have specified to contain your formatted messages
 should be populated when iRODS generates any sort of event data.
