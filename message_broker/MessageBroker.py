@@ -26,6 +26,14 @@ class MessageBroker():
         logger.error("unable to sanitize message")
         return None
     
+    def getQueues(self):
+        try:
+            with open('%s' % (self.args.queueconfig), 'r') as f:
+                self.queueconfig = yaml.load(f)
+        except:
+            logger.error("unable to load specified queue config file %s " % self.args.queueconfig)
+        
+    
     def processMessage(self, id, message):
 
         try:
@@ -52,9 +60,14 @@ class MessageBroker():
                 self.payload[amqp_message['pid']][key] = amqp_message[key]
                 if key == 'action' and amqp_message[key] == 'END':
                     formatted_message = self.processMessage(amqp_message['hostname'] + ':' + amqp_message['pid'], self.payload[amqp_message['pid']])
-                    
-                    logger.debug("publishing formatted message")
-                    self.rabbit.publish(json.dumps(formatted_message), self.args.rabbitmq_format_queue)
+
+                    # load in our configured queues
+                    self.getQueues()
+
+                    # publish the newly formatted message onto all configured queues
+                    for queue in self.queueconfig['queues']:
+                        logger.debug("publishing formatted message to %s queue" % (queue))
+                        self.rabbit.publish(json.dumps(formatted_message), queue)
 
     def start(self):
         self.rabbit = RabbitMQInit(self.args.rabbitmq_host, self.args.rabbitmq_port, self.args.rabbitmq_user, self.args.rabbitmq_pass)

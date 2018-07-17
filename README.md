@@ -67,5 +67,16 @@ formatted messages as they are proccessed by the Message Broker. This will allow
 various forms of indexers, with little overhead.
 
 
+## Docker Image
+
+A docker image is now available to run the message broker.
+
+You can pull the image down with the following command:
+
+`docker pull heliumdatacommons/messagebroker`
+
+There are some variables you have to provide values to when running the container.
+There are defaults set, but more than likely you'll need to override them with your own values.
+
 ### Questions about this Package?
 Send me an email at `dsikes@renci.org` if you need assistance with this package.

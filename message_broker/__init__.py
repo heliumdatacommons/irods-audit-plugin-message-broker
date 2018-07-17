@@ -16,8 +16,8 @@ def main():
         parser.add_argument("--rabbitmq-user", help="Which user to connect to RabbitMQ with", default="guest")
         parser.add_argument("--rabbitmq-pass", help="Which password to use to connect to the RabbitMQ instance", default="guest")
         parser.add_argument("--rabbitmq-audit-queue", help="Which queue is iRODS publishing to ", default='audit_messages')
-        parser.add_argument("--rabbitmq-format-queue", help="Which queue should the MessageBroker publish formatted messages to ", default='audit_messages_formatted') 
         parser.add_argument("--keymap-file", help="Provide a keymap file for the MessageBroker to use during filtering ", default='keymap.yml')
+        parser.add_argument("--queueconfig-file", help="Provide a queue config file for the MessageBroker to know which queues to populate with formatted messages ", default='queueconfig.yml')
 
 
         # get the provided arguments for this instance of the MessageBroker

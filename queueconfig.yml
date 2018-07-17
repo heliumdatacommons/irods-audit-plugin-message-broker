@@ -1,0 +1,3 @@
+queues:
+  - formatted_audit_messages
+  - full_text_search_messages
