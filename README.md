@@ -45,7 +45,7 @@ To start the message broker, simply use the `start` command.
 | --rabbitmq-user | guest |
 | --rabbitmq-pass | guest |
 | --rabbitmq-audit-queue | audit_messages |
-| --rabbitmq-format-queue | audit_messages_formatted |
+| --queueconfig-file | queueconfig.yml |
 | --keymap-file | keymap.yml |
 
 
