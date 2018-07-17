@@ -29,7 +29,7 @@ class MessageBroker():
     def getQueues(self):
         try:
             with open('%s' % (self.args.queueconfig), 'r') as f:
-                self.queueconfig = yaml.load(f)
+                return yaml.load(f)
         except:
             logger.error("unable to load specified queue config file %s " % self.args.queueconfig)
         
@@ -60,12 +60,11 @@ class MessageBroker():
                 self.payload[amqp_message['pid']][key] = amqp_message[key]
                 if key == 'action' and amqp_message[key] == 'END':
                     formatted_message = self.processMessage(amqp_message['hostname'] + ':' + amqp_message['pid'], self.payload[amqp_message['pid']])
-
-                    # load in our configured queues
-                    self.getQueues()
+                    
+                    queueconfig = self.getQueues()
 
                     # publish the newly formatted message onto all configured queues
-                    for queue in self.queueconfig['queues']:
+                    for queue in queueconfig['queues']:
                         logger.debug("publishing formatted message to %s queue" % (queue))
                         self.rabbit.publish(json.dumps(formatted_message), queue)
 
