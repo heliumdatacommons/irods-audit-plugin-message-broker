@@ -13,6 +13,7 @@ def main():
         parser = argparse.ArgumentParser()
         parser.add_argument("start", help="Start the MessageBroker ") 
         parser.add_argument("--log-level", help="What level should the logger be run at ", default='DEBUG')
+        parser.add_argument("--log-file", help="Specify what file should the logger write to", default='/var/log/mb/mb.log')
         parser.add_argument("--rabbitmq-host", help="Which RabbitMQ server should the MessageBroker connect to ", default='localhost')
         parser.add_argument("--rabbitmq-port", help="Which port the RabbitMQ server is listening on ", default=5672)
         parser.add_argument("--rabbitmq-user", help="Which user to connect to RabbitMQ with", default="guest")

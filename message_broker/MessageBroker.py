@@ -5,6 +5,8 @@ import logging
 import logzero
 from logzero import logger
 from utils.RabbitMQInit import RabbitMQInit
+import os
+import errno
 
 def get_log_level(level):
     if level == 'DEBUG':
@@ -26,6 +28,15 @@ class MessageBroker():
         self.payload = {}
         self.args = args
         self.r = redis.StrictRedis(host=self.args.redis_host, port=self.args.redis_port, db=self.args.redis_db)
+        
+        if not os.path.exists(os.path.dirname(self.args.log_file)):
+            try:
+                os.makedirs(os.path.dirname(self.args.log_file))
+            except OSError as exc: # Guard against race condition
+                if exc.errno != errno.EEXIST:
+                    raise
+        
+        logzero.logfile(self.args.log_file, maxBytes=1e6, backupCount=3)
         logzero.loglevel(get_log_level(self.args.log_level))
         logger.debug("MessageBroker has been instantiated")
 
@@ -53,6 +64,7 @@ class MessageBroker():
     
     def processMessagesByPid(self, pid):
         messages = self.r.lrange(pid, 0, -1)
+        self.r.delete(pid)
         try:
             with open('%s' % (self.args.keymap_file), 'r') as f:
                 keymap = yaml.load(f)
