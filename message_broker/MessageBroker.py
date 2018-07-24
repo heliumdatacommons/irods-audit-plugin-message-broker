@@ -1,10 +1,24 @@
 import json
 import yaml
 import redis
+import logging
+import logzero
 from logzero import logger
 from utils.RabbitMQInit import RabbitMQInit
 
-
+def get_log_level(level):
+    if level == 'DEBUG':
+        return logging.DEBUG
+    if level == 'INFO':
+        return logging.INFO
+    if level == 'WARNING':
+        return logging.WARNING
+    if level == 'NOTSET':
+        return logging.NOTSET
+    if level == 'ERROR':
+        return logging.ERROR
+    if level == 'CRITICAL':
+        return logging.CRITICAL
 
 class MessageBroker():
     
@@ -12,6 +26,7 @@ class MessageBroker():
         self.payload = {}
         self.args = args
         self.r = redis.StrictRedis(host=self.args.redis_host, port=self.args.redis_port, db=self.args.redis_db)
+        logzero.loglevel(get_log_level(self.args.log_level))
         logger.debug("MessageBroker has been instantiated")
 
     def sanitize(self, message):
