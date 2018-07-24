@@ -1,5 +1,6 @@
 import json
 import yaml
+import redis
 from logzero import logger
 from utils.RabbitMQInit import RabbitMQInit
 
@@ -8,9 +9,10 @@ from utils.RabbitMQInit import RabbitMQInit
 class MessageBroker():
     
     def __init__(self, args):
-        logger.debug("MessageBroker has been instantiated")
         self.payload = {}
         self.args = args
+        self.r = redis.StrictRedis(host=self.args.redis_host, port=self.args.redis_port, db=self.args.redis_db)
+        logger.debug("MessageBroker has been instantiated")
 
     def sanitize(self, message):
         logger.debug("recieved new message to sanitize")
@@ -34,39 +36,35 @@ class MessageBroker():
             logger.error("unable to load specified queue config file %s " % self.args.queueconfig)
         
     
-    def processMessage(self, id, message):
-
+    def processMessagesByPid(self, pid):
+        messages = self.r.lrange(pid, 0, -1)
         try:
             with open('%s' % (self.args.keymap_file), 'r') as f:
                 keymap = yaml.load(f)
         except:
             logger.error("unable to load specified keymap file %s " % self.args.keymap_file)
-        
-        final_message = {}
-        for key in keymap:
-            if key in message:
-                final_message[keymap[key]] = message[key]
 
-        return final_message
+        for message in messages:
+            message = json.loads(message)
+            final_message = {}
+            for key in keymap:
+                if key in message:
+                    final_message[keymap[key]] = message[key]
+
+            yield final_message
 
     def consumeMessage(self, ch, method, properties, body):
         amqp_message = self.sanitize(body)
-
         if amqp_message:
-            if amqp_message['pid'] not in self.payload:
-                self.payload[amqp_message['pid']] = {}
-
+            queueconfig = self.getQueues()
+            self.r.lpush(amqp_message['pid'], json.dumps(amqp_message))
             for key in amqp_message:
-                self.payload[amqp_message['pid']][key] = amqp_message[key]
                 if key == 'action' and amqp_message[key] == 'END':
-                    formatted_message = self.processMessage(amqp_message['hostname'] + ':' + amqp_message['pid'], self.payload[amqp_message['pid']])
-                    
-                    queueconfig = self.getQueues()
-
+                    for message in self.processMessagesByPid(amqp_message['pid']):
                     # publish the newly formatted message onto all configured queues
-                    for queue in queueconfig['queues']:
-                        logger.debug("publishing formatted message to %s queue" % (queue))
-                        self.rabbit.publish(json.dumps(formatted_message), queue)
+                        for queue in queueconfig['queues']:
+                            logger.debug("publishing formatted message to %s queue" % (queue))
+                            self.rabbit.publish(json.dumps(message), queue)
 
     def start(self):
         self.rabbit = RabbitMQInit(self.args.rabbitmq_host, self.args.rabbitmq_port, self.args.rabbitmq_user, self.args.rabbitmq_pass)

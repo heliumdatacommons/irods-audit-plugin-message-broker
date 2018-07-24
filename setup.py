@@ -7,7 +7,7 @@ from setuptools import setup
 
 setup(
     name='irods-audit-plugin-message-broker',
-    version='0.2.0',
+    version='0.4.1',
     description='iRODS audit plugin message broker formats event messages produced by irods into JSON objects',  # Required
     url='https://github.com/pypa/sampleproject',
     author='Dan Sikes',
