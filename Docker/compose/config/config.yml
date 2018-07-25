@@ -1,0 +1,21 @@
+queues:
+
+  # example_queue
+  example_queue:
+    # pep whitelist will take precedent over regex options
+    # pep_whitelist:
+    #   - audit_pep_database_open_pre
+    #   - audit_pep_database_open_post
+    
+    pep_regex:
+      - "audit_pep_database_.*"
+
+keymap:
+  pid: pid
+  const_std_string_ptr: operation_type
+  logical_path: logical_path
+  time_stamp: time_stamp
+  user_user_name: user
+  rule_name: rule_name
+
+clean_anything_older_than: 3600 # seconds (aka 1 hour)

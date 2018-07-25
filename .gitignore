@@ -5,3 +5,4 @@ linting-requirements.txt
 *.egg-info
 dist/
 .DS_Store
+*.log

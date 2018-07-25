@@ -1,0 +1,19 @@
+version: '3'
+services:
+  mbproducer:
+    image: "dsikes/messagebroker:latest"
+    command: "mb start --mode=producer --rabbitmq-host=rabbitmq.commonsshare.org --rabbitmq-audit-queue=audit_messages --redis-host=redis.commonsshare.org --log-file='/mb/mb-producer.log' --log-level=DEBUG"
+    volumes:
+       - ./config:/mb
+  
+  mbconsumer:
+    image: "dsikes/messagebroker:latest"
+    command: "mb start --mode=consumer --rabbitmq-host=rabbitmq.commonsshare.org  --redis-host=redis.commonsshare.org --log-file='/mb/mb-consumer.log' --log-level=DEBUG"
+    volumes:
+       - ./config:/mb
+  
+  mbcleaner:
+    image: "dsikes/messagebroker:latest"
+    command: "mb start --mode=cleaner --redis-host=redis.commonsshare.org --log-file='/mb/mb-cleaner.log' --log-level=DEBUG"
+    volumes:
+       - ./config:/mb

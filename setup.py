@@ -7,7 +7,7 @@ from setuptools import setup
 
 setup(
     name='irods-audit-plugin-message-broker',
-    version='0.4.2',
+    version='0.4.5',
     description='iRODS audit plugin message broker formats event messages produced by irods into JSON objects',  # Required
     url='https://github.com/pypa/sampleproject',
     author='Dan Sikes',
@@ -15,7 +15,7 @@ setup(
     keywords='irods amqp audit plugin message broker rabbitmq',
 
     packages=['message_broker', 'message_broker.utils'],
-    install_requires=['logzero', 'pika', 'pyaml'],
+    install_requires=['logzero', 'pika', 'pyaml', 'redis'],
     entry_points={
         'console_scripts': [
             'mb=message_broker:main',
